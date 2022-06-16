@@ -15,12 +15,19 @@
 
     Contact: code@inmanta.com
 """
+import json
 import logging
 import os
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Generator, Sequence
 
 import pytest
+
+from pytest_inmanta_yang.clab.config import HostConfig
+from pytest_inmanta_yang.clab.host import ClabHost
 
 if TYPE_CHECKING:
     # Local type stub for mypy that works with both pytest < 7 and pytest >=7
@@ -48,6 +55,156 @@ LOGGER = logging.getLogger(__name__)
 logging.getLogger("ncclient").setLevel(logging.ERROR)
 logging.getLogger("ncdiff.model").setLevel(logging.CRITICAL)
 logging.getLogger("paramiko").setLevel(logging.INFO)
+
+
+@pytest.fixture()
+def clab_topology() -> str:
+    """
+    Overwrite this fixture to point to the topology file of your choice.
+
+        .. code_block:: python
+
+            import os
+            import pytest
+            import pytest_inmanta_yang
+
+            @pytest.fixture()
+            def clab_topology() -> str:
+                return os.path.join(os.path.dirname(__file__), "clab/srlinux.topology.yml")
+
+    """
+    return os.path.join(os.path.dirname(__file__), "clab/srlinux.topology.yml")
+
+
+@pytest.fixture()
+def clab_workdir(clab_topology: str) -> Generator[str, None, None]:
+    """
+    Create a temporary directory in which we copy the topology file.
+
+    Once the test is done, we take care to remove any root-owned file from the directory.
+    The directory itself is then removed by exiting the TemporaryDirectory context.
+
+    If you need to add additional files on the side of the topology file, you can
+    overwrite this fixture (and call the original one).
+
+        .. code_block:: python
+
+            import os
+            import pytest
+            import pytest_inmanta_yang
+
+            @pytest.fixture()
+            def clab_workdir(clab_workdir: str) -> str:
+                config = os.path.join(os.path.dirname(__file__), "srlinux/docs/config.json")
+                shutil.copy(config, os.path.join(clab_workdir, "config.json"))
+
+                return clab_workdir
+
+    """
+    cleanup_command = "sudo rm -r"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        LOGGER.debug(f"Using folder {tmp} as clab working directory")
+        shutil.copy(clab_topology, os.path.join(tmp, "topology.yml"))
+
+        yield tmp
+
+        LOGGER.info("Removing root owned files")
+        for path in os.listdir(tmp):
+            file = Path(tmp, path)
+            if file.owner() != "root":
+                continue
+
+            cleanup_command = f"{cleanup_command} {file.name}"
+
+        LOGGER.debug(cleanup_command)
+        cleanup = subprocess.Popen(
+            cleanup_command.split(),
+            cwd=tmp,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        stdout, stderr = cleanup.communicate()
+        assert cleanup.returncode == 0, stderr
+        LOGGER.debug(stdout)
+
+
+@pytest.fixture()
+def clab_hosts(
+    clab_workdir: str, use_session_temp_dir: str
+) -> Generator[Sequence[HostConfig], None, None]:
+    """
+    Execute a few clab command in the clab working directory to start a lab, and once
+    the tests are done, clean it up.
+    """
+
+    clab_deploy = "sudo clab deploy --topo topology.yml"
+    clab_inspect = [
+        "bash",
+        "-c",
+        "sudo clab inspect --format json --topo topology.yml | grep -vG time=.*level=.*msg=.*",
+    ]
+    clab_destroy = "sudo clab destroy --topo topology.yml"
+
+    # Destroy the lab
+    LOGGER.info("Ensuring the lab is not deployed")
+    LOGGER.debug(clab_destroy)
+    destroy = subprocess.Popen(
+        clab_destroy.split(),
+        cwd=clab_workdir,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    stdout, stderr = destroy.communicate()
+    assert destroy.returncode == 0, stderr
+    LOGGER.debug(stdout)
+
+    # Deploy the lab
+    LOGGER.info("Deploying the clab topology")
+    LOGGER.debug(clab_deploy)
+    deploy = subprocess.Popen(
+        clab_deploy.split(),
+        cwd=clab_workdir,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    stdout, stderr = deploy.communicate()
+    assert deploy.returncode == 0, stderr
+    LOGGER.debug(stdout)
+
+    # Get the container ip
+    LOGGER.info("Getting deployed host information")
+    LOGGER.debug(clab_inspect)
+    inspect = subprocess.Popen(
+        clab_inspect,
+        cwd=clab_workdir,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    stdout, stderr = inspect.communicate()
+    assert inspect.returncode == 0, stderr
+    LOGGER.debug(stdout)
+
+    hosts = [ClabHost(**host) for host in json.loads(stdout)]
+    yield [host.config(clab_workdir) for host in hosts]
+
+    # Destroy the lab
+    LOGGER.info("Destroying the clab topology")
+    LOGGER.debug(clab_destroy)
+    destroy = subprocess.Popen(
+        clab_destroy.split(),
+        cwd=clab_workdir,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    stdout, stderr = destroy.communicate()
+    assert destroy.returncode == 0, stderr
+    LOGGER.debug(stdout)
 
 
 @pytest.fixture(scope="session")
