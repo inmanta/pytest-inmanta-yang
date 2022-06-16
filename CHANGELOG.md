@@ -1,4 +1,4 @@
-# v 1.3.0 (?)
+# v 1.3.0 (2022-06-16)
 Changes in this release:
  - Add clab fixtures (#1)
 
