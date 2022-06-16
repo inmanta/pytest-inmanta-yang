@@ -1,0 +1,7 @@
+name: srlinux
+
+topology:
+  nodes:
+    srl1:
+      kind: srl
+      image: ghcr.io/nokia/srlinux
