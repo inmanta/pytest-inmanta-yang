@@ -91,7 +91,9 @@ class YangTest:
         If no matching resource is found, None is returned.
         """
         if name is not None:
-            LOGGER.info("Fetching desired state for yang::NetconfResource with name %s", name)
+            LOGGER.info(
+                "Fetching desired state for yang::NetconfResource with name %s", name
+            )
             resource = self._project.get_resource("yang::NetconfResource", name=name)  # type: ignore
         else:
             LOGGER.info("Fetching desired state for yang::NetconfResource")
