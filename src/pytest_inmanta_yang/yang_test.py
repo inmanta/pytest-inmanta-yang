@@ -19,6 +19,7 @@ import logging
 from typing import Dict, Optional
 
 from inmanta.data.model import AttributeStateChange
+from inmanta.resources import Resource
 from lxml import etree, objectify  # type: ignore
 from pytest_inmanta.plugin import Project
 
@@ -29,7 +30,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class YangTest:
-    """Yang test fixture. This fixture currently assumes there is only one yang::Resource"""
+    """Yang test fixture. This fixture currently assumes there is only one yang::NetconfResource"""
 
     def __init__(self, project: Project, netconf_device: NetconfDeviceHelper) -> None:
         self._project = project
@@ -82,6 +83,20 @@ class YangTest:
 
         self._project.compile(new_model)
 
+    def get_netconf_resource(self, **filter_args: object) -> Optional[Resource]:
+        """
+        Get the first matching netconf resource matching the filter it can find.  It first try to
+        find a resource of type yang::NetconfResource, and if none is found, yang::Resource.
+
+        :param filter_args: This is passed on to Project.get_resource
+        """
+        resource = self._project.get_resource("yang::NetconfResource", **filter_args)
+        if resource is not None:
+            return resource
+
+        resource = self._project.get_resource("yang::Resource", **filter_args)
+        return resource
+
     def get_desired_state(self, name: str = None) -> Optional[ObjectElement]:
         """
         Returns the desired state of the resource with the given name. If no name is provided
@@ -91,11 +106,13 @@ class YangTest:
         If no matching resource is found, None is returned.
         """
         if name is not None:
-            LOGGER.info("Fetching desired state for yang::Resource with name %s", name)
-            resource = self._project.get_resource("yang::Resource", name=name)  # type: ignore
+            LOGGER.info(
+                "Fetching desired state for yang::NetconfResource with name %s", name
+            )
+            resource = self.get_netconf_resource(name=name)  # type: ignore
         else:
-            LOGGER.info("Fetching desired state for yang::Resource")
-            resource = self._project.get_resource("yang::Resource")
+            LOGGER.info("Fetching desired state for yang::NetconfResource")
+            resource = self.get_netconf_resource()
 
         if resource is None:
             return None
@@ -121,11 +138,17 @@ class YangTest:
 
     def dryrun(self) -> Dict[str, AttributeStateChange]:
         """Perform a dryrun and return the list of changes."""
-        LOGGER.info("Running dryrun for yang::Resource")
-        return self._project.dryrun_resource("yang::Resource")
+        # First we try to resolve the yang resource type used in the model (legacy Resource or new NetconfResource)
+        resource = self.get_netconf_resource()
+        resource_type = (
+            resource.id.entity_type if resource is not None else "yang::NetconfResource"
+        )
+
+        LOGGER.info(f"Running dryrun for {resource_type}")
+        return self._project.dryrun_resource(resource_type)
 
     def deploy(self, pre_dryrun: bool = True, post_dryrun: bool = True) -> None:
-        """Deploy the yang::Resource in the model. By default it asserts that before the deploy there are dryrun changes and
+        """Deploy the yang::NetconfResource in the model. By default it asserts that before the deploy there are dryrun changes and
         after the deploy there are not dryrun changes.
 
         This can be disabled and dryruns can be run with self.dryrun.
@@ -134,8 +157,14 @@ class YangTest:
             changes = self.dryrun()
             assert "xml" in changes
 
-        LOGGER.info("Running deploy for yang::Resource")
-        self._project.deploy_resource("yang::Resource")
+        # First we try to resolve the yang resource type used in the model (legacy Resource or new NetconfResource)
+        resource = self.get_netconf_resource()
+        resource_type = (
+            resource.id.entity_type if resource is not None else "yang::NetconfResource"
+        )
+
+        LOGGER.info(f"Running deploy for {resource_type}")
+        self._project.deploy_resource(resource_type)
 
         if post_dryrun:
             changes = self.dryrun()

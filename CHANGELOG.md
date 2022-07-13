@@ -1,5 +1,6 @@
 # v 1.4.0 (?)
 Changes in this release:
+ - Start using yang::NetconfResource instead of yang::Resource.
 
 # v 1.3.0 (2022-06-16)
 Changes in this release:
