@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class YangTest:
-    """Yang test fixture. This fixture currently assumes there is only one yang::Resource"""
+    """Yang test fixture. This fixture currently assumes there is only one yang::NetconfResource"""
 
     def __init__(self, project: Project, netconf_device: NetconfDeviceHelper) -> None:
         self._project = project
@@ -91,11 +91,11 @@ class YangTest:
         If no matching resource is found, None is returned.
         """
         if name is not None:
-            LOGGER.info("Fetching desired state for yang::Resource with name %s", name)
-            resource = self._project.get_resource("yang::Resource", name=name)  # type: ignore
+            LOGGER.info("Fetching desired state for yang::NetconfResource with name %s", name)
+            resource = self._project.get_resource("yang::NetconfResource", name=name)  # type: ignore
         else:
-            LOGGER.info("Fetching desired state for yang::Resource")
-            resource = self._project.get_resource("yang::Resource")
+            LOGGER.info("Fetching desired state for yang::NetconfResource")
+            resource = self._project.get_resource("yang::NetconfResource")
 
         if resource is None:
             return None
@@ -121,11 +121,11 @@ class YangTest:
 
     def dryrun(self) -> Dict[str, AttributeStateChange]:
         """Perform a dryrun and return the list of changes."""
-        LOGGER.info("Running dryrun for yang::Resource")
-        return self._project.dryrun_resource("yang::Resource")
+        LOGGER.info("Running dryrun for yang::NetconfResource")
+        return self._project.dryrun_resource("yang::NetconfResource")
 
     def deploy(self, pre_dryrun: bool = True, post_dryrun: bool = True) -> None:
-        """Deploy the yang::Resource in the model. By default it asserts that before the deploy there are dryrun changes and
+        """Deploy the yang::NetconfResource in the model. By default it asserts that before the deploy there are dryrun changes and
         after the deploy there are not dryrun changes.
 
         This can be disabled and dryruns can be run with self.dryrun.
@@ -134,8 +134,8 @@ class YangTest:
             changes = self.dryrun()
             assert "xml" in changes
 
-        LOGGER.info("Running deploy for yang::Resource")
-        self._project.deploy_resource("yang::Resource")
+        LOGGER.info("Running deploy for yang::NetconfResource")
+        self._project.deploy_resource("yang::NetconfResource")
 
         if post_dryrun:
             changes = self.dryrun()
