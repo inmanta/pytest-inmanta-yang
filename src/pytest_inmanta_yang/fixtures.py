@@ -189,7 +189,16 @@ def clab_hosts(
     assert inspect.returncode == 0, stderr
     LOGGER.debug(stdout)
 
-    hosts = [ClabHost(**host) for host in json.loads(stdout)]
+    # The layout of the json body has changed in this PR (released in 0.31)
+    # https://github.com/srl-labs/containerlab/pull/887
+    # Prior to this, we had a list of dicts as payload. We now have a dict containing
+    # a "containers" key, which has as value the former list.
+    containers_list = json.loads(stdout)
+    if isinstance(containers_list, dict):
+        containers_list = containers_list["containers"]
+
+    hosts = [ClabHost(**host) for host in containers_list]
+
     yield [host.config(clab_workdir) for host in hosts]
 
     # Destroy the lab
