@@ -2,7 +2,7 @@ lxml
 ncclient
 pyang==2.5.3
 pytest
-ncdiff>=20.10
+ncdiff~=20.10
 requests
 scrapli
 paramiko
