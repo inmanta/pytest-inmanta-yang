@@ -5,3 +5,10 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: "ncdiff"
+    update-types: ["version-update:semver-major"]
+    # Same version as the yang module
+  - dependency-name: "pyang"
+    versions: [">=2.5.3"]
+    # Same version as the yang module
