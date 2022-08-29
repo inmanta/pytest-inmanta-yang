@@ -38,7 +38,7 @@ setup(
         "ncclient",
         "pyang==2.5.3",  # Same version as the yang module
         "pytest",
-        "ncdiff>=20.10,<23.0",  # Same version as the yang module
+        "ncdiff~=20.10",  # Same version as the yang module
         "requests",
         "scrapli",
         "paramiko",
