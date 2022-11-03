@@ -186,7 +186,7 @@ class NetconfDeviceHelper(object):
         if filter is not None and isinstance(filter, str):
             filter = etree.fromstring(filter)
 
-        if filter is not None and not filter.tag == "filter":
+        if filter is not None and not etree.QName(filter).localname == "filter":
             root = etree.Element("filter")
             root.append(filter)
             filter = root
