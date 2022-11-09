@@ -53,7 +53,6 @@ from pytest_inmanta_yang.yang_test import YangTest
 LOGGER = logging.getLogger(__name__)
 
 logging.getLogger("ncclient").setLevel(logging.ERROR)
-logging.getLogger("ncdiff.model").setLevel(logging.CRITICAL)
 logging.getLogger("paramiko").setLevel(logging.INFO)
 
 
