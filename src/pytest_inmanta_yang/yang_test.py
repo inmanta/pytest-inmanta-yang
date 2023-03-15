@@ -148,8 +148,8 @@ class YangTest:
         return self._project.dryrun_resource(resource_type)
 
     def deploy(self, pre_dryrun: bool = True, post_dryrun: bool = True) -> None:
-        """Deploy the yang::NetconfResource in the model. By default it asserts that before the deploy there are dryrun changes and
-        after the deploy there are not dryrun changes.
+        """Deploy the yang::NetconfResource in the model. By default it asserts that before the deploy there are dryrun changes
+        and after the deploy there are not dryrun changes.
 
         This can be disabled and dryruns can be run with self.dryrun.
         """
