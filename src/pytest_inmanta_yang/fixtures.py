@@ -138,27 +138,13 @@ def clab_hosts(
     the tests are done, clean it up.
     """
 
-    clab_deploy = "sudo clab deploy --topo topology.yml"
+    clab_deploy = "sudo clab deploy --topo topology.yml --reconfigure"
     clab_inspect = [
         "bash",
         "-c",
         "sudo clab inspect --format json --topo topology.yml | grep -vG time=.*level=.*msg=.*",
     ]
     clab_destroy = "sudo clab destroy --topo topology.yml"
-
-    # Destroy the lab
-    LOGGER.info("Ensuring the lab is not deployed")
-    LOGGER.debug(clab_destroy)
-    destroy = subprocess.Popen(
-        clab_destroy.split(),
-        cwd=clab_workdir,
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-    stdout, stderr = destroy.communicate()
-    assert destroy.returncode == 0, stderr
-    LOGGER.debug(stdout)
 
     # Deploy the lab
     LOGGER.info("Deploying the clab topology")
