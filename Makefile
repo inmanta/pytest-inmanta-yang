@@ -8,8 +8,8 @@ flake8 = flake8 tests src/pytest_inmanta_yang
 .PHONY: install
 install:
 	pip install -U setuptools pip wheel
-	PIP_INDEX_URL=https://packages.inmanta.com/public/quickstart/python/simple/ pip install -U --pre -r requirements.dev.txt -r requirements.txt
-	pip install -e .
+	PIP_INDEX_URL=https://packages.inmanta.com/public/quickstart/python/simple/ pip install -U --pre -r requirements.dev.txt
+	pip install -e . -c requirements.txt
 
 .PHONY: format
 format:
