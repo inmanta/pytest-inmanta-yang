@@ -3,3 +3,4 @@ repo_name: pytest-inmanta-yang
 directories_to_lint:
   - src
   - tests
+  - docs/examples

@@ -1,0 +1,5 @@
+include inmanta_plugins/nokia_srlinux_interface/setup.cfg
+include inmanta_plugins/nokia_srlinux_interface/py.typed
+recursive-include inmanta_plugins/nokia_srlinux_interface/model *.cf
+graft inmanta_plugins/nokia_srlinux_interface/files
+graft inmanta_plugins/nokia_srlinux_interface/templates

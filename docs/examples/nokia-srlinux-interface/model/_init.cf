@@ -1,0 +1,54 @@
+"""
+    Copyright 2023 Inmanta
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Contact: code@inmanta.com
+"""
+import nokia_srlinux
+import nokia_srlinux::types::srl_nokia_common
+import nokia_srlinux::interface
+import nokia_srlinux::interface::subinterface
+import nokia_srlinux::interface::subinterface::ipv4
+import yang
+
+
+entity Interface:
+    nokia_srlinux::types::srl_nokia_common::interface_all name
+    nokia_srlinux::interface_mtu_t mtu
+    nokia_srlinux::types::srl_nokia_common::ipv4_prefix_with_host_bits address
+end
+
+Interface.device [1] -- nokia_srlinux::GnmiDevice
+
+index Interface(device, name)
+
+
+implementation basic_interface for Interface:
+    nokia_srlinux::Interface(
+        device=device,
+        name=self.name,
+        mtu=self.mtu,
+        subinterface=nokia_srlinux::interface::Subinterface(
+            x_index=0,
+            ipv4=nokia_srlinux::interface::subinterface::Ipv4(
+                address=nokia_srlinux::interface::subinterface::ipv4::Address(
+                    ip_prefix=self.address,
+                ),
+            ),
+        ),
+    )
+end
+
+
+implement Interface using basic_interface
