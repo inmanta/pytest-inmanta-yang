@@ -2,7 +2,7 @@ lxml==4.9.2
 ncclient==0.6.13
 pyang==2.5.3
 pytest==7.3.1
-requests==2.29.0
+requests==2.30.0
 scrapli==2023.1.30
 paramiko==3.1.0
 inmanta-core==8.3.0
