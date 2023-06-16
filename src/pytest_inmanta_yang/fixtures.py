@@ -278,7 +278,7 @@ def netconf_cleanup(netconf_device: NetconfDeviceHelper, initial_path: str) -> N
     )
     initial_config = Path(initial_path).read_text()
 
-    LOGGER.debug(f"Deploying initial config on device: \n{initial_config}")
+    LOGGER.debug("Deploying initial config on device from %s", initial_path)
     netconf_device.edit_config(
         initial_config, default_operation=NetconfOperation.REPLACE
     )
