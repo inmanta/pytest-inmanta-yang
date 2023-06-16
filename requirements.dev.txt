@@ -1,4 +1,4 @@
-inmanta-dev-dependencies[module]~=2.72
+inmanta-dev-dependencies[module]~=2.73
 pytest-cov==4.1.0
 types-paramiko==3.2.0.0
 types-PyYAML==6.0.12.10
