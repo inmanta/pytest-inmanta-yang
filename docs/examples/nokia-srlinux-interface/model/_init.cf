@@ -47,6 +47,7 @@ implementation basic_interface for Interface:
                 ),
             ),
         ),
+        comanaged=false,
     )
 end
 
