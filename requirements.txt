@@ -1,7 +1,7 @@
 lxml==4.9.3
 ncclient==0.6.15
 pyang==2.5.3
-pytest==7.4.2
+pytest==7.4.3
 requests==2.31.0
 scrapli==2023.7.30
 paramiko==3.3.1
