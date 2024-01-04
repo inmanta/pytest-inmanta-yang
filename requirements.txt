@@ -5,5 +5,5 @@ pytest==7.4.4
 requests==2.31.0
 scrapli==2023.7.30
 paramiko==3.4.0
-inmanta-core==11.0.0
+inmanta-core==11.0.1
 pytest-inmanta==2.9.0
