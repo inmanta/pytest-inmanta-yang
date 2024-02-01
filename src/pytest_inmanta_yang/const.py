@@ -15,6 +15,7 @@
 
     Contact: code@inmanta.com
 """
+
 DEFAULT_TIMEOUT = 30
 NETCONF_RPC_TIMEOUT = "NETCONF_RPC_TIMEOUT"
 

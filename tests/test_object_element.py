@@ -15,6 +15,7 @@
 
     Contact: code@inmanta.com
 """
+
 import pytest
 from lxml import objectify  # type: ignore
 

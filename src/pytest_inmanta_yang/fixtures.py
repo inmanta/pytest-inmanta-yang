@@ -15,6 +15,7 @@
 
     Contact: code@inmanta.com
 """
+
 import json
 import logging
 import os
@@ -34,9 +35,11 @@ if TYPE_CHECKING:
     # https://docs.pytest.org/en/7.1.x/_modules/_pytest/legacypath.html#TempdirFactory
     import py
 
+    # fmt: off
     class TempdirFactory:
         def mktemp(self, path: str) -> py.path.local:
             ...
+    # fmt: on
 
 
 from inmanta.agent import config as inmanta_config
