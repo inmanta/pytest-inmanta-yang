@@ -15,6 +15,7 @@
 
     Contact: code@inmanta.com
 """
+
 import pytest
 from _pytest.config.argparsing import Parser
 from _pytest.nodes import Item

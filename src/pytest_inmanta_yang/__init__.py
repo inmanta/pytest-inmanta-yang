@@ -15,6 +15,7 @@
 
     Contact: code@inmanta.com
 """
+
 from pytest_inmanta_yang.fixtures import *  # noqa: F401, F403
 from pytest_inmanta_yang.netconf_device_helper import *  # noqa: F401, F403
 from pytest_inmanta_yang.object_element import ObjectElement  # noqa: F401

@@ -15,4 +15,5 @@
 
     Contact: code@inmanta.com
 """
+
 pytest_plugins = "pytester"
