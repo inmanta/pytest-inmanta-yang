@@ -27,6 +27,7 @@ from ncclient.operations.lock import LockContext  # type: ignore
 from scrapli import Scrapli
 
 from pytest_inmanta_yang.const import (
+    NETCONF_NS_URN,
     VENDOR_CISCO,
     VENDOR_JUNIPER,
     VENDOR_NOKIA,
@@ -188,7 +189,7 @@ class NetconfDeviceHelper(object):
             filter = etree.fromstring(filter)
 
         if filter is not None and not etree.QName(filter).localname == "filter":
-            root = etree.Element("filter")
+            root = etree.Element(f"{{{NETCONF_NS_URN}}}filter")
             root.append(filter)
             filter = root
 
