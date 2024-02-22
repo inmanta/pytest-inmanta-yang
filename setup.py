@@ -21,7 +21,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="pytest-inmanta-yang",
-    version="1.5.0",
+    version="1.6.0",
     author="Inmanta NV",
     author_email="code@inmanta.com",
     license="Apache License, Version 2.0",

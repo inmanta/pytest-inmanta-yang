@@ -1,3 +1,6 @@
+# v 1.6.0 (?)
+Changes in this release:
+
 # v 1.5.0 (2024-02-22)
 Changes in this release:
  - Create default filter node with correct namespace
