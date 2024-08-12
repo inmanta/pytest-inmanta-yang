@@ -4,6 +4,6 @@ pyang==2.5.3
 pytest==8.3.2
 requests==2.32.3
 scrapli==2024.7.30
-paramiko==3.4.0
+paramiko==3.4.1
 inmanta-core==13.0.1
 pytest-inmanta==2.10.0
