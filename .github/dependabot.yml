@@ -5,7 +5,3 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 99
-  ignore:
-  - dependency-name: "pyang"
-    versions: [">=2.5.3"]
-    # Same version as the yang module
