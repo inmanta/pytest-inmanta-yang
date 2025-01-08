@@ -36,7 +36,7 @@ setup(
     install_requires=[
         "lxml",
         "ncclient",
-        "pyang==2.5.3",  # Same version as the yang module
+        "pyang==2.6.1",  # Same version as the yang module
         "pytest",
         "requests",
         "scrapli",
