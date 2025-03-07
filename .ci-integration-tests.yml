@@ -2,5 +2,3 @@ pipeline_template: ci/inmanta-tools/Jenkinsfile-integration-tests-2
 pyupgrade_mode: fail
 pyupgrade_python_version: py311
 mypy_mode: fail
-env_vars:
-  PIP_INDEX_URL: https://packages.inmanta.com/public/quickstart/python/simple/
