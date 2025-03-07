@@ -10,9 +10,6 @@ install:
 	pip install -U setuptools pip wheel
 	pip install -U --pre -r requirements.dev.txt -e . -c requirements.txt
 
-ci-install:
-	PIP_INDEX_URL=https://packages.inmanta.com/public/quickstart/python/simple/ PATH="$$PATH:env/bin" $(MAKE) install
-
 .PHONY: format
 format:
 	$(isort)
