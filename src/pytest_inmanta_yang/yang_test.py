@@ -91,11 +91,15 @@ class YangTest:
 
         :param filter_args: This is passed on to Project.get_resource
         """
-        resource = self._project.get_resource("yang::NetconfResource", strict_mode=False, **filter_args)
+        resource = self._project.get_resource(
+            "yang::NetconfResource", strict_mode=False, **filter_args
+        )
         if resource is not None:
             return resource
 
-        resource = self._project.get_resource("yang::Resource", strict_mode=False, **filter_args)
+        resource = self._project.get_resource(
+            "yang::Resource", strict_mode=False, **filter_args
+        )
         return resource
 
     def get_desired_state(self, name: str | None = None) -> Optional[ObjectElement]:
