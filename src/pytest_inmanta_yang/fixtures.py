@@ -103,33 +103,30 @@ def clab_workdir(clab_topology: str) -> Generator[str, None, None]:
                 return clab_workdir
 
     """
-    cleanup_command = "sudo rm -r"
-
     with tempfile.TemporaryDirectory() as tmp:
-        LOGGER.debug(f"Using folder {tmp} as clab working directory")
+        LOGGER.debug("Using folder %s as clab working directory", tmp)
         shutil.copy(clab_topology, os.path.join(tmp, "topology.yml"))
 
         yield tmp
 
-        LOGGER.info("Removing root owned files")
-        for path in os.listdir(tmp):
-            file = Path(tmp, path)
-            if file.owner() != "root":
-                continue
+        root_files = [
+            str(p)
+            for file in os.listdir(tmp)
+            if (p := Path(tmp, file).owner() == "root")
+        ]
+        if root_files:
+            LOGGER.info("Removing root owned files: %s", root_files)
 
-            cleanup_command = f"{cleanup_command} {file.name}"
-
-        LOGGER.debug(cleanup_command)
-        cleanup = subprocess.Popen(
-            cleanup_command.split(),
-            cwd=tmp,
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            text=True,
-        )
-        stdout, stderr = cleanup.communicate()
-        assert cleanup.returncode == 0, stderr
-        LOGGER.debug(stdout)
+            cleanup = subprocess.Popen(
+                ["sudo", "rm", "-r", *root_files],
+                cwd=tmp,
+                stderr=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+            stdout, stderr = cleanup.communicate()
+            assert cleanup.returncode == 0, stderr
+            LOGGER.debug(stdout)
 
 
 @pytest.fixture()
