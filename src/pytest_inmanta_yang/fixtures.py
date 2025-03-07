@@ -112,7 +112,7 @@ def clab_workdir(clab_topology: str) -> Generator[str, None, None]:
         root_files = [
             str(p)
             for file in os.listdir(tmp)
-            if (p := Path(tmp, file).owner() == "root")
+            if (p := Path(tmp, file)).owner() == "root"
         ]
         if root_files:
             LOGGER.info("Removing root owned files: %s", root_files)
