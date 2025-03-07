@@ -33,7 +33,7 @@ from pytest_inmanta_yang.clab.host import ClabHost
 if TYPE_CHECKING:
     # Local type stub for mypy that works with both pytest < 7 and pytest >=7
     # https://docs.pytest.org/en/7.1.x/_modules/_pytest/legacypath.html#TempdirFactory
-    import py
+    import py  # type: ignore
 
     # fmt: off
     class TempdirFactory:

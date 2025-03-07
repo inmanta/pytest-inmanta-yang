@@ -7,7 +7,7 @@ name = "pytest-inmanta-yang"
 version = "1.6.0"
 description = "Common fixtures used in inmanta yang related modules"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = { file = "LICENSE" }
 keywords = ["pytest", "inmanta", "yang"]
 authors = [{ name = "Inmanta", email = "code@inmanta.com" }]

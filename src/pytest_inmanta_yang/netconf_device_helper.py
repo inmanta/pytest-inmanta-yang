@@ -84,8 +84,8 @@ class NetconfDeviceHelper(object):
     @classmethod
     def using_env_variables(
         cls,
-        password_env_var: str = None,
-        username_env_var: str = None,
+        password_env_var: str | None = None,
+        username_env_var: str | None = None,
     ) -> "NetconfDeviceHelper":
         """
         Methods returns an instance of NetconfDeviceHelper
