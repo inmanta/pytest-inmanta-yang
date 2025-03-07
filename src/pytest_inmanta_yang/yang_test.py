@@ -91,14 +91,18 @@ class YangTest:
 
         :param filter_args: This is passed on to Project.get_resource
         """
-        resource = self._project.get_resource("yang::NetconfResource", **filter_args)
+        resource = self._project.get_resource(
+            "yang::NetconfResource", strict_mode=False, **filter_args
+        )
         if resource is not None:
             return resource
 
-        resource = self._project.get_resource("yang::Resource", **filter_args)
+        resource = self._project.get_resource(
+            "yang::Resource", strict_mode=False, **filter_args
+        )
         return resource
 
-    def get_desired_state(self, name: str = None) -> Optional[ObjectElement]:
+    def get_desired_state(self, name: str | None = None) -> Optional[ObjectElement]:
         """
         Returns the desired state of the resource with the given name. If no name is provided
         it will return the resource if only one exists. If multiple yang resources exist the first
@@ -121,7 +125,7 @@ class YangTest:
         self._last_desired_state = ObjectElement(objectify.fromstring(resource.xml))  # type: ignore
         return self._last_desired_state
 
-    def get_current_state(self, filter: str = None) -> ObjectElement:
+    def get_current_state(self, filter: str | None = None) -> ObjectElement:
         """
         Return the current (full) configuration of the device.
 

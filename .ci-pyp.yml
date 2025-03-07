@@ -1,3 +1,0 @@
-pipeline_template: ci/inmanta-tools/Jenkinsfile-pyp
-repo_name: pytest-inmanta-yang
-public: true

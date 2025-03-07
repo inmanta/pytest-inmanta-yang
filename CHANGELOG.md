@@ -1,22 +1,25 @@
-# v 1.6.0 (?)
-Changes in this release:
+# Changelog
 
-# v 1.5.0 (2024-02-22)
+## v1.6.0 - ?
+
+- Fix cleanup of clab workdir when no root files can be found
+
+## v 1.5.0 (2024-02-22)
 Changes in this release:
  - Create default filter node with correct namespace
 
-# v 1.4.0 (2024-02-20)
+## v 1.4.0 (2024-02-20)
 Changes in this release:
  - Fix support for clab>=0.31
  - Start using yang::NetconfResource instead of yang::Resource.
  - Ignore filter namespace in get_config method
  - Do not log the full reset config
 
-# v 1.3.0 (2022-06-16)
+## v 1.3.0 (2022-06-16)
 Changes in this release:
  - Add clab fixtures (#1)
 
-# v 1.2.3 (2022-05-10)
+## v 1.2.3 (2022-05-10)
 Changes in this release:
 
 - Initial public release

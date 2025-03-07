@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytest-inmanta-yang"
+version = "1.6.0"
+description = "Common fixtures used in inmanta yang related modules"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+keywords = ["pytest", "inmanta", "yang"]
+authors = [{ name = "Inmanta", email = "code@inmanta.com" }]
+
+# For a list of valid classifiers, see https://pypi.org/classifiers/
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Framework :: Pytest",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Testing",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+    "lxml",
+    "ncclient",
+    "pyang==2.6.1",  # Same version as the yang module
+    "pytest",
+    "scrapli",
+    "paramiko",
+    "inmanta-core",
+    "pytest-inmanta",
+]
+
+[project.urls]
+"Homepage" = "https://inmanta.com"
+"Bug Reports" = "https://github.com/inmanta/pytest-inmanta-yang/issues"
+"Source" = "https://github.com/inmanta/pytest-inmanta-yang"
+
+[project.entry-points.pytest11]
+pytest-inmanta-yang = "pytest_inmanta_yang"
+
+[tool.setuptools]
+packages = { find = { include = ["pytest_inmanta_yang"], where = ["src"] } }
+
+[tool.setuptools.package-data]
+pytest_inmanta_yang = ["resources/*.xml", "resources/*.cfg", "py.typed"]
+
+[tool.bumpversion]
+current_version = "1.6.0.dev0"
+tag = false
+commit = false
+parse = """
+    ^(?P<major>0|[1-9]\\d*)\\.
+    (?P<minor>0|[1-9]\\d*)\\.
+    (?P<patch>0|[1-9]\\d*)
+    (?:
+        .(?P<tag>dev0)
+    )?$
+"""
+serialize = [
+    "{major}.{minor}.{patch}.{tag}",
+    "{major}.{minor}.{patch}",
+]
+
+[tool.bumpversion.parts.tag]
+values = ["dev0", ""]
+optional_value = ""
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "^version = \"{current_version}\""
+regex = true
+replace = "version = \"{new_version}\""
+serialize = ["{major}.{minor}.{patch}"]
+
+[[tool.bumpversion.files]]
+filename = "setup.cfg"
+serialize = ["{tag}"]
+search = "tag_build = {current_version}"
+replace = "tag_build = {new_version}"
