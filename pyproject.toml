@@ -44,10 +44,10 @@ dependencies = [
 pytest-inmanta-yang = "pytest_inmanta_yang"
 
 [tool.setuptools]
-packages = { find = { include = ["pytest_inmanta_yang"], where = ["src"] } }
+packages = { find = { where = ["src"] } }
 
 [tool.setuptools.package-data]
-pytest_inmanta_yang = ["resources/*.xml", "resources/*.cfg", "py.typed"]
+pytest_inmanta_yang = ["clab/srlinux.topology.yml", "py.typed"]
 
 [tool.bumpversion]
 current_version = "1.6.0.dev0"
