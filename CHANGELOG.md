@@ -1,4 +1,10 @@
 # v 1.6.0 (?)
+
+## v1.6.0 - ?
+
+- Fix cleanup of clab workdir when no root files can be found
+
+
 Changes in this release:
 
 # v 1.5.0 (2024-02-22)
