@@ -174,31 +174,45 @@ def clab_hosts(
     assert inspect.returncode == 0, stderr
     LOGGER.debug(stdout)
 
-    # The layout of the json body has changed in this PR (released in 0.31)
-    # https://github.com/srl-labs/containerlab/pull/887
-    # Prior to this, we had a list of dicts as payload. We now have a dict containing
-    # a "containers" key, which has as value the former list.
-    containers_list = json.loads(stdout)
-    if isinstance(containers_list, dict):
-        containers_list = containers_list["containers"]
+    try:
+        containers_list = json.loads(stdout)
+        match containers_list:
+            case list() as containers:
+                # Prior to 0.31, the output is a list of containers
+                containers_list = containers
+            case {"containers": list() as containers}:
+                # The layout of the json body has changed in this PR (released in 0.31)
+                # https://github.com/srl-labs/containerlab/pull/887
+                containers_list = containers
+            case dict() as labs if len(labs) == 1:
+                # The layout of the json body has changed in 0.68
+                # https://containerlab.dev/rn/0.68/
+                _, containers = labs.popitem()
+                assert isinstance(
+                    containers, list
+                ), f"Unexpected inspect output: {containers_list}"
+                containers_list = containers
+            case _:
+                raise ValueError(f"Unexpected inspect output: {containers_list}")
 
-    hosts = [ClabHost(**host) for host in containers_list]
+        hosts = [ClabHost(**host) for host in containers_list]
 
-    yield [host.config(clab_workdir) for host in hosts]
+        yield [host.config(clab_workdir) for host in hosts]
 
-    # Destroy the lab
-    LOGGER.info("Destroying the clab topology")
-    LOGGER.debug(clab_destroy)
-    destroy = subprocess.Popen(
-        clab_destroy.split(),
-        cwd=clab_workdir,
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-    stdout, stderr = destroy.communicate()
-    assert destroy.returncode == 0, stderr
-    LOGGER.debug(stdout)
+    finally:
+        # Destroy the lab, even if the fixture failed
+        LOGGER.info("Destroying the clab topology")
+        LOGGER.debug(clab_destroy)
+        destroy = subprocess.Popen(
+            clab_destroy.split(),
+            cwd=clab_workdir,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        stdout, stderr = destroy.communicate()
+        assert destroy.returncode == 0, stderr
+        LOGGER.debug(stdout)
 
 
 @pytest.fixture(scope="session")
