@@ -3,7 +3,7 @@ lxml==5.4.0
 ncclient==0.6.19
 pyang==2.6.1
 pytest==8.3.5
-requests==2.32.3
+requests==2.32.4
 scrapli==2025.1.30
 paramiko==3.5.1
 inmanta-core==15.0.0
