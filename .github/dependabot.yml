@@ -10,3 +10,4 @@ updates:
       patterns:
         - "inmanta-dev-dependencies"
         - "pytest"
+        - "lxml"
