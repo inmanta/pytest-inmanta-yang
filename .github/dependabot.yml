@@ -5,3 +5,8 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 99
+  groups:
+    inmanta-dev-dependencies:
+      patterns:
+        - "inmanta-dev-dependencies"
+        - "pytest"
