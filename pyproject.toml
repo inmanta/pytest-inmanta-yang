@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "lxml",
     "ncclient",
-    "pyang==2.6.1",  # Same version as the yang module
+    "pyang==2.7.1",  # Same version as the yang module
     "pytest",
     "scrapli==2025.1.30",  # No semantic versioning, pin to exact release
     "paramiko",
