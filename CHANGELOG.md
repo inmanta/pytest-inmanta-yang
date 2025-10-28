@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.6.0 - ?
+## v1.6.0 - 2025-10-28
 
 - Fix cleanup of clab workdir when no root files can be found
 
