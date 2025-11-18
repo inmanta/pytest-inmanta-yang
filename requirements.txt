@@ -7,4 +7,4 @@ requests==2.32.5
 scrapli==2025.1.30
 paramiko==4.0.0
 inmanta-core==15.0.0
-pytest-inmanta==3.2.0
+pytest-inmanta==4.0.0
