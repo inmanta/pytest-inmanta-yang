@@ -29,7 +29,7 @@ dependencies = [
     "ncclient",
     "pyang==2.7.1",  # Same version as the yang module
     "pytest",
-    "scrapli==2025.1.30",  # No semantic versioning, pin to exact release
+    "scrapli==2026.2.20",  # No semantic versioning, pin to exact release
     "paramiko",
     "inmanta-core",
     "pytest-inmanta",
