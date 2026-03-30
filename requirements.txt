@@ -3,7 +3,7 @@ lxml==6.0.2
 ncclient==0.7.1
 pyang==2.7.1
 # pytest is dev-deps as well 
-requests==2.33.0
+requests==2.33.1
 scrapli==2026.2.20
 paramiko==4.0.0
 inmanta-core==18.0.0
