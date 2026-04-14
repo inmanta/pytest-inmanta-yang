@@ -1,7 +1,8 @@
 # Changelog
 
-## v1.6.1 - ?
+## v1.7.0 - ?
 
+- Bump minimal required python version to 3.12
 
 ## v1.6.0 - 2025-10-28
 
