@@ -6,5 +6,5 @@ pyang==2.7.1
 requests==2.33.1
 scrapli==2026.2.20
 paramiko==4.0.0
-inmanta-core==18.0.0
+inmanta-core==18.0.1
 pytest-inmanta==4.0.0
