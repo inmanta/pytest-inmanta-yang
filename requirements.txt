@@ -1,5 +1,5 @@
 # lxml also has this constraint in inmanta-dev-dependencies
-lxml==6.0.2
+lxml==6.0.4
 ncclient==0.7.1
 pyang==2.7.1
 # pytest is dev-deps as well 
