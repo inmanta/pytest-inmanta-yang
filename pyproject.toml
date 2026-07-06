@@ -33,7 +33,7 @@ dependencies = [
     "inmanta-core",
     "pytest-inmanta",
     # Version 82.0.0 and higher removed pkg_resources which breaks pyformance (core dependency) that still depends on it.
-    "setuptools<83",
+    "setuptools<84",
 ]
 
 [project.urls]
