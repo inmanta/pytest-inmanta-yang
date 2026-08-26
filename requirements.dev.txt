@@ -1,5 +1,5 @@
 inmanta-dev-dependencies==2.207.0
 pytest-cov==7.1.0
 types-paramiko==5.0.0.20260724
-types-PyYAML==6.0.12.20260724
+types-PyYAML==6.0.12.20260815
 inmanta-module-nokia-srlinux
