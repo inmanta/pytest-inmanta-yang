@@ -1,4 +1,9 @@
 pipeline_template: ci/inmanta-tools/Jenkinsfile-integration-tests-2
+# By default the pipeline derives the python version from the dev ISO compatibility.json, which is
+# already on python 3.14.  The released versions of inmanta-core don't support python 3.14 yet: the
+# fix (inmanta-core#10699) only landed on core master, which ships with ISO10 in January.  Until
+# then, run on the python version of the current stable ISO.
+python_binary: "python3.13"
 pyupgrade_mode: fail
 pyupgrade_python_version: py311
 mypy_mode: fail
