@@ -56,7 +56,7 @@ class MissingEnvVariableError(Exception):
     """
 
 
-class NetconfDeviceHelper:
+class NetconfDeviceHelper(object):
     """
     Helper class containing NETCONF-enabled device credentials, other parameters and all the utilities methods.
     It has been designed to be used in one of two ways:
@@ -149,7 +149,7 @@ class NetconfDeviceHelper:
             raise ValueError(f"Provided vendor `{vendor}` is not one of {VENDORS}")
 
     @property
-    def credentials(self) -> dict[str, int | str]:
+    def credentials(self) -> Dict[str, Union[int, str]]:
         """
         :return: device credentials as dictionary
         """
@@ -177,7 +177,7 @@ class NetconfDeviceHelper:
         return netconf_client
 
     def get_config(
-        self, datastore: str = "running", filter: etree.Element | str | None = None
+        self, datastore: str = "running", filter: Union[etree.Element, str, None] = None
     ) -> etree.Element:
         """
         Gets device configuration from given NETCONF datastore
@@ -199,9 +199,9 @@ class NetconfDeviceHelper:
 
     def edit_config(
         self,
-        config: etree.Element | str,
+        config: Union[etree.Element, str],
         datastore: str = "candidate",
-        default_operation: NetconfOperation | None = None,
+        default_operation: Optional[NetconfOperation] = None,
     ) -> None:
         """
         Edits config represented by XML tree in given NETCONF datastore.
@@ -210,7 +210,7 @@ class NetconfDeviceHelper:
         :param datastore: name of NETCONF datastore - possible values: 'running', 'candidate', 'startup'
         :param default_operation: can be either of "merge", "replace", "none", or None
         """
-        parsed_default_operation: str | None = None
+        parsed_default_operation: Optional[str] = None
         if default_operation is not None:
             # We ensure that the netconf operation we received is valid
             # A string with the correct value would be accepted as well
@@ -232,7 +232,7 @@ class NetconfDeviceHelper:
                 )
                 connection.commit()
 
-    def get_ssh_connect(self, platform: str | None = None) -> Cli:
+    def get_ssh_connect(self, platform: Optional[str] = None) -> Cli:
         """Get a scrapli ssh connection"""
         platform_by_vendor = {
             VENDOR_CISCO: "cisco_iosxr",

@@ -23,8 +23,7 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING
-from collections.abc import Generator, Sequence
+from typing import TYPE_CHECKING, Generator, Sequence
 
 import pytest
 
