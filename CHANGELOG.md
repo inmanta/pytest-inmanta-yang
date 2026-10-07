@@ -1,8 +1,9 @@
 # Changelog
 
-## v1.7.0 - ?
+## v2.0.0 - ?
 
 - Bump minimal required python version to 3.12
+- Drop the scrapli dependency: `NetconfDeviceHelper.get_ssh_connect` now returns a connected `paramiko.SSHClient` and no longer takes a `platform` argument
 
 ## v1.6.0 - 2025-10-28
 
