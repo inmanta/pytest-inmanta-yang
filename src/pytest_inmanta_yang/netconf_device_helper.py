@@ -21,20 +21,15 @@ import os
 from enum import Enum
 from typing import Dict, Optional, Union
 
+import paramiko
 from lxml import etree  # type: ignore
 from ncclient import manager as ncclient_manager  # type: ignore
 from ncclient.operations.lock import LockContext  # type: ignore
-from scrapli import Scrapli
 
-from pytest_inmanta_yang.const import (
-    NETCONF_NS_URN,
-    VENDOR_CISCO,
-    VENDOR_JUNIPER,
-    VENDOR_NOKIA,
-    VENDORS,
-)
+from pytest_inmanta_yang.const import NETCONF_NS_URN, VENDORS
 
 NETCONF_TIMEOUT = 30
+SSH_TIMEOUT = 30
 
 LOGGER = logging.getLogger(__name__)
 
@@ -231,23 +226,24 @@ class NetconfDeviceHelper(object):
                 )
                 connection.commit()
 
-    def get_ssh_connect(self, platform: Optional[str] = None):
-        """Get a scrapli ssh connection"""
-        platform_by_vendor = {
-            VENDOR_CISCO: "cisco_iosxr",
-            VENDOR_NOKIA: "nokia_sros",
-            VENDOR_JUNIPER: "juniper_junos",
-        }
-
-        return Scrapli(
-            host=self.host,
+    def get_ssh_connect(self) -> paramiko.SSHClient:
+        """
+        Get a connected paramiko ssh client.  The caller is responsible for closing it,
+        e.g. by using it as a context manager.
+        """
+        client = paramiko.SSHClient()
+        # Host keys of the test devices are not known in advance
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(
+            hostname=self.host,
             port=self.port,
-            auth_username=self.username,
-            auth_password=self.password,
-            auth_strict_key=False,
-            platform=platform or platform_by_vendor[self.vendor],
-            transport="paramiko",
+            username=self.username,
+            password=self.password,
+            timeout=SSH_TIMEOUT,
+            allow_agent=False,
+            look_for_keys=False,
         )
+        return client
 
     def _lock(
         self, connection: ncclient_manager.Manager, datastore: str = "running"

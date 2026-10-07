@@ -43,11 +43,11 @@ if TYPE_CHECKING:
 
 
 from inmanta.agent import config as inmanta_config
-from paramiko import sftp_client
 from pytest_inmanta.plugin import Project
 
 from pytest_inmanta_yang.const import VENDOR_CISCO
 from pytest_inmanta_yang.netconf_device_helper import (
+    SSH_TIMEOUT,
     NetconfDeviceHelper,
     NetconfOperation,
 )
@@ -274,10 +274,16 @@ def cisco_cleanup(netconf_device: NetconfDeviceHelper, initial_path: str) -> Non
     LOGGER.debug(f"read config and upload to : `{netconf_device.hostname}`")
     with netconf_device.get_ssh_connect() as ssh:
         # copy the file first
-        client = sftp_client.SFTPClient.from_transport(ssh.channel.transport.session)
-        assert client is not None
-        client.put(initial_path, "disk0:/baseconfig.cfg")
-        ssh.send_command("copy disk0:/baseconfig.cfg running-config replace")
+        with ssh.open_sftp() as sftp:
+            sftp.put(initial_path, "disk0:/baseconfig.cfg")
+        command = "copy disk0:/baseconfig.cfg running-config replace"
+        _, stdout, _ = ssh.exec_command(command, timeout=SSH_TIMEOUT)
+        LOGGER.debug(
+            "Output of `%s` on `%s`:\n%s",
+            command,
+            netconf_device.hostname,
+            stdout.read().decode(),
+        )
 
     LOGGER.info(f"Cleanup done for Cisco device: `{netconf_device.hostname}`")
 
