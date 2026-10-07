@@ -276,10 +276,14 @@ def cisco_cleanup(netconf_device: NetconfDeviceHelper, initial_path: str) -> Non
         # copy the file first
         with ssh.open_sftp() as sftp:
             sftp.put(initial_path, "disk0:/baseconfig.cfg")
-        _, stdout, _ = ssh.exec_command(
-            "copy disk0:/baseconfig.cfg running-config replace", timeout=SSH_TIMEOUT
+        command = "copy disk0:/baseconfig.cfg running-config replace"
+        _, stdout, _ = ssh.exec_command(command, timeout=SSH_TIMEOUT)
+        LOGGER.debug(
+            "Output of `%s` on `%s`:\n%s",
+            command,
+            netconf_device.hostname,
+            stdout.read().decode(),
         )
-        LOGGER.debug(stdout.read().decode())
 
     LOGGER.info(f"Cleanup done for Cisco device: `{netconf_device.hostname}`")
 
