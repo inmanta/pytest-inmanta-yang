@@ -3,6 +3,7 @@
 ## v1.7.0 - ?
 
 - Bump minimal required python version to 3.12
+- Upgrade to scrapli 2: `NetconfDeviceHelper.get_ssh_connect` now returns a `scrapli.Cli`
 
 ## v1.6.0 - 2025-10-28
 

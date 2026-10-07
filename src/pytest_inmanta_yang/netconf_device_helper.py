@@ -24,7 +24,7 @@ from typing import Dict, Optional, Union
 from lxml import etree  # type: ignore
 from ncclient import manager as ncclient_manager  # type: ignore
 from ncclient.operations.lock import LockContext  # type: ignore
-from scrapli import Scrapli
+from scrapli import AuthOptions, Cli, SessionOptions, TransportSsh2Options
 
 from pytest_inmanta_yang.const import (
     NETCONF_NS_URN,
@@ -35,6 +35,7 @@ from pytest_inmanta_yang.const import (
 )
 
 NETCONF_TIMEOUT = 30
+SSH_TIMEOUT = 30
 
 LOGGER = logging.getLogger(__name__)
 
@@ -55,7 +56,7 @@ class MissingEnvVariableError(Exception):
     """
 
 
-class NetconfDeviceHelper(object):
+class NetconfDeviceHelper:
     """
     Helper class containing NETCONF-enabled device credentials, other parameters and all the utilities methods.
     It has been designed to be used in one of two ways:
@@ -148,7 +149,7 @@ class NetconfDeviceHelper(object):
             raise ValueError(f"Provided vendor `{vendor}` is not one of {VENDORS}")
 
     @property
-    def credentials(self) -> Dict[str, Union[int, str]]:
+    def credentials(self) -> dict[str, int | str]:
         """
         :return: device credentials as dictionary
         """
@@ -176,7 +177,7 @@ class NetconfDeviceHelper(object):
         return netconf_client
 
     def get_config(
-        self, datastore: str = "running", filter: Union[etree.Element, str, None] = None
+        self, datastore: str = "running", filter: etree.Element | str | None = None
     ) -> etree.Element:
         """
         Gets device configuration from given NETCONF datastore
@@ -198,9 +199,9 @@ class NetconfDeviceHelper(object):
 
     def edit_config(
         self,
-        config: Union[etree.Element, str],
+        config: etree.Element | str,
         datastore: str = "candidate",
-        default_operation: Optional[NetconfOperation] = None,
+        default_operation: NetconfOperation | None = None,
     ) -> None:
         """
         Edits config represented by XML tree in given NETCONF datastore.
@@ -209,7 +210,7 @@ class NetconfDeviceHelper(object):
         :param datastore: name of NETCONF datastore - possible values: 'running', 'candidate', 'startup'
         :param default_operation: can be either of "merge", "replace", "none", or None
         """
-        parsed_default_operation: Optional[str] = None
+        parsed_default_operation: str | None = None
         if default_operation is not None:
             # We ensure that the netconf operation we received is valid
             # A string with the correct value would be accepted as well
@@ -231,7 +232,7 @@ class NetconfDeviceHelper(object):
                 )
                 connection.commit()
 
-    def get_ssh_connect(self, platform: Optional[str] = None):
+    def get_ssh_connect(self, platform: str | None = None) -> Cli:
         """Get a scrapli ssh connection"""
         platform_by_vendor = {
             VENDOR_CISCO: "cisco_iosxr",
@@ -239,14 +240,13 @@ class NetconfDeviceHelper(object):
             VENDOR_JUNIPER: "juniper_junos",
         }
 
-        return Scrapli(
+        return Cli(
             host=self.host,
             port=self.port,
-            auth_username=self.username,
-            auth_password=self.password,
-            auth_strict_key=False,
-            platform=platform or platform_by_vendor[self.vendor],
-            transport="paramiko",
+            definition_file_or_name=platform or platform_by_vendor[self.vendor],
+            auth_options=AuthOptions(username=self.username, password=self.password),
+            session_options=SessionOptions(operation_timeout_s=SSH_TIMEOUT),
+            transport_options=TransportSsh2Options(),
         )
 
     def _lock(

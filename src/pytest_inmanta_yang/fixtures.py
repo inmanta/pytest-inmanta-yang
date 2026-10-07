@@ -23,7 +23,8 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import TYPE_CHECKING, Generator, Sequence
+from typing import TYPE_CHECKING
+from collections.abc import Generator, Sequence
 
 import pytest
 
@@ -43,7 +44,7 @@ if TYPE_CHECKING:
 
 
 from inmanta.agent import config as inmanta_config
-from paramiko import sftp_client
+from paramiko import SFTPClient, Transport
 from pytest_inmanta.plugin import Project
 
 from pytest_inmanta_yang.const import VENDOR_CISCO
@@ -272,12 +273,17 @@ def cisco_cleanup(netconf_device: NetconfDeviceHelper, initial_path: str) -> Non
         f"Cleaning up Cisco device: `{netconf_device.hostname}` - startup config file will be uploaded using SSH"
     )
     LOGGER.debug(f"read config and upload to : `{netconf_device.hostname}`")
-    with netconf_device.get_ssh_connect() as ssh:
-        # copy the file first
-        client = sftp_client.SFTPClient.from_transport(ssh.channel.transport.session)
+    with Transport((netconf_device.host, netconf_device.port)) as transport:
+        transport.connect(
+            username=netconf_device.username, password=netconf_device.password
+        )
+        client = SFTPClient.from_transport(transport)
         assert client is not None
-        client.put(initial_path, "disk0:/baseconfig.cfg")
-        ssh.send_command("copy disk0:/baseconfig.cfg running-config replace")
+        with client:
+            client.put(initial_path, "disk0:/baseconfig.cfg")
+
+    with netconf_device.get_ssh_connect() as ssh:
+        ssh.send_input("copy disk0:/baseconfig.cfg running-config replace")
 
     LOGGER.info(f"Cleanup done for Cisco device: `{netconf_device.hostname}`")
 
