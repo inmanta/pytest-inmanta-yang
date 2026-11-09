@@ -1,0 +1,7 @@
+pipeline_template: ci/inmanta-tools/Jenkinsfile-integration-tests-2
+additional_constraints:
+    - "-c https://docs.inmanta.com/inmanta-service-orchestrator-dev/9/reference/requirements.txt"
+python_binary: python3.13
+pyupgrade_mode: fail
+pyupgrade_python_version: py311
+mypy_mode: fail
