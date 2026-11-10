@@ -5,4 +5,4 @@ pyang==2.7.1
 # pytest is dev-deps as well 
 requests==2.34.2
 paramiko==5.1.0
-pytest-inmanta==4.0.0
+pytest-inmanta==4.1.0
